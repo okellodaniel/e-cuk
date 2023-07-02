@@ -1,18 +1,16 @@
-import { Button } from "@/components/ui/button"
+"use client"
+import { Modal } from "@/components/ui/modal"
 
-const Home = () => {
+const SetupPage = () => {
     return (
-        <>
-            <div className="p-4">
-                <p> Hello Admin Dashboard</p>
-            </div>
-            <div className="p-4">
-                <Button variant="outline">
-                    Click Me
-                </Button>
-            </div>
-        </>
+
+        <div className="p-4">
+            <Modal title="waagwan" description="Test Desc" isOpen={true} onClose={() => { }}>
+                children
+            </Modal>
+        </div>
+
     )
 }
 
-export default Home
+export default SetupPage
