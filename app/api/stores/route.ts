@@ -1,12 +1,12 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs"
-import { data } from "autoprefixer";
 import { NextResponse } from "next/server"
 
-const POST = async (req: Request) => {
+export default async function POST(req: Request) {
     try {
         const { userId } = auth();
         const body = await req.json();
+
         const { name } = body;
 
         if (!userId) {
@@ -28,5 +28,3 @@ const POST = async (req: Request) => {
         return new NextResponse("Internal server error", { status: 500 })
     }
 }
-
-export default POST;
