@@ -24,7 +24,9 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
         }
     })
 
-    if (!userId) redirect("/");
+    if (!store) {
+        redirect("/")
+    };
 
     return (
         <div className="flex-col">
