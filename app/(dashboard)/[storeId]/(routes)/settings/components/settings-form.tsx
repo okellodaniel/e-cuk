@@ -16,6 +16,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingsFormProps {
     initialData: Store
@@ -34,6 +36,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
 
     const form = useForm<SettingsFormValues>({
         resolver: zodResolver(formSchema),
@@ -57,12 +60,30 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         }
     };
 
+
+    const onDelete = async () => {
+        try {
+            setLoading(true);
+            await axios.delete(`/api/stores/${params.storeId}`);
+            router.refresh();
+            router.push('/');
+            toast.success("Store deleted.");
+        } catch (error) {
+            toast.error("Make sure to remove all products and categories first.");
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    }
+
     return (
         <>
             <AlertModal
                 isOpen={open}
                 onClose={close}
-                onConfirm={() => { }}
+                onConfirm={onDelete}
                 loading={loading}
             />
 
@@ -105,6 +126,9 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
                     <Button disabled={loading} className="ml-auto" type="submit">Save Changes</Button>
                 </form>
             </Form>
+            <Separator />
+
+            <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`} variant="public" />
         </>
     );
 };
