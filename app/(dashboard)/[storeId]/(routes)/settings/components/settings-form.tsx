@@ -6,12 +6,16 @@ import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useParams, useRouter } from "next/navigation";
+import { AlertModal } from "@/components/modals/alert-modal";
 
 interface SettingsFormProps {
     initialData: Store
@@ -28,17 +32,40 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
+    const params = useParams();
+    const router = useRouter();
+
     const form = useForm<SettingsFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData
     });
 
     const onSubmit = async (data: SettingsFormValues) => {
-        console.log(data)
+        try {
+            setLoading(true);
+
+            await axios.patch(`/api/stores/${params.storeId}`, data);
+            router.refresh();
+            toast.success("Store updated.");
+
+        } catch (error) {
+            toast.error("Something went wrong");
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     return (
         <>
+            <AlertModal
+                isOpen={open}
+                onClose={close}
+                onConfirm={() => { }}
+                loading={loading}
+            />
+
             <div className="flex items-center justify-between">
                 <Heading
                     title="Settings"
