@@ -57,10 +57,14 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
     const onSubmit = async (data: BillboardsFormValues) => {
         try {
             setLoading(true);
-
-            await axios.patch(`/api/stores/${params.storeId}`, data);
+            if (initialData) {
+                await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data);
+            }
+            else {
+                await axios.post(`/api/${params.storeId}/billboards/`, data);
+            }
             router.refresh();
-            toast.success("Store updated.");
+            toast.success(toastMessage);
 
         } catch (error) {
             toast.error("Something went wrong");
@@ -75,12 +79,12 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/stores/${params.storeId}`);
+            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
             router.refresh();
             router.push('/');
-            toast.success("Store deleted.");
+            toast.success("Billboard deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all products and categories first.");
+            toast.error("Make sure to remove all categories using this billboard.");
             console.log(error);
         }
         finally {
@@ -122,7 +126,7 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                     <FormField
                         control={form.control}
-                        name="label"
+                        name="imageUrl"
                         render={
                             ({ field }) => (
                                 <FormItem>
