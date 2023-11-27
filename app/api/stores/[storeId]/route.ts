@@ -14,9 +14,6 @@ export async function PATCH(req: Request,
 
         const storeId = params.storeId;
 
-        console.log(`---------------${storeId}----------------------------`);
-
-
         if (!userId) {
             return new NextResponse("Unauthorised", { status: 401 });
         }
