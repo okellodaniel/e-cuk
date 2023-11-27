@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { Billboard } from "@prisma/client";
-import { Trash } from "lucide-react";
+import { Router, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -61,9 +61,10 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
                 await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data);
             }
             else {
-                await axios.post(`/api/${params.storeId}/billboards/`, data);
+                await axios.post(`/api/${params.storeId}/billboards`, data);
             }
             router.refresh();
+            router.push(`/${params.storeId}/billboards`);
             toast.success(toastMessage);
 
         } catch (error) {
