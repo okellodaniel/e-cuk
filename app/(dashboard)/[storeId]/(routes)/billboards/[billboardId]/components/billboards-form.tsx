@@ -39,7 +39,6 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
 
     const params = useParams();
     const router = useRouter();
-    const origin = useOrigin();
 
     const form = useForm<BillboardsFormValues>({
         resolver: zodResolver(formSchema),
@@ -98,7 +97,7 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
         <>
             <AlertModal
                 isOpen={open}
-                onClose={close}
+                onClose={() => setOpen(false)}
                 onConfirm={onDelete}
                 loading={loading}
             />

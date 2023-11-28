@@ -33,12 +33,17 @@ export async function POST(req: Request, { params }: { params: { storeId: string
 
         const billboard = await prismadb.billboard.create({
             data: {
-                label,
-                imageUrl,
+                label: label,
+                imageUrl: imageUrl,
                 storeId: params.storeId
             }
         });
+
+        console.log(billboard.id);
+
+
         return NextResponse.json(billboard);
+
     } catch (error) {
         console.log('[BILLBOARDS_POST]', error)
         return new NextResponse("Internal server error", { status: 500 })
@@ -57,6 +62,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string 
                 storeId: params.storeId
             }
         });
+
         return NextResponse.json(billboards);
     } catch (error) {
         console.log('[BILLBOARDS_GET]', error)
