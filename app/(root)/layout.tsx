@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 const SetupLayout = async ({ children }: { children: React.ReactNode }) => {
-    
+
     const { userId } = auth();
 
     if (!userId) {
