@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb";
+import CategoriesForm from "./components/categories-form";
 
 
 const CategoryPage = async ({
@@ -16,7 +17,7 @@ const CategoryPage = async ({
             <div>
                 <div className="flex-col">
                     <div className="flex-1 space-y-4 p-8 pt-6">
-                        <categoriesForm initialData={category}/>
+                        <CategoriesForm initialData={category} />
                     </div>
                 </div>
             </div>
