@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, MoreHorizontal } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
 
