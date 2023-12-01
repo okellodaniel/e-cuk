@@ -1,8 +1,8 @@
 "use client";
 
 import * as z from "zod";
-import { Billboard } from "@prisma/client";
-import { Router, Trash } from "lucide-react";
+import { Category } from "@prisma/client";
+import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -16,22 +16,20 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
+
 
 const formSchema = z.object({
-    label: z.string().min(1),
-    imageUrl: z.string().min(1)
+    name: z.string().min(1),
+    billboardId: z.string().min(1)
 });
 
-type BillboardsFormValues = z.infer<typeof formSchema>;
+type CategoriesFormValues = z.infer<typeof formSchema>;
 
-
-interface BillboardsFormProps {
-    initialData: Billboard | null
+interface CategoriesFormProps {
+    initialData: Category | null
 }
 
-
-const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
+const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -39,30 +37,30 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
     const params = useParams();
     const router = useRouter();
 
-    const form = useForm<BillboardsFormValues>({
+    const form = useForm<CategoriesFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
-            imageUrl: '',
-            label: ''
+            name: '',
+            billboardId: ''
         }
     });
 
-    const title = initialData ? "Edit billboard" : "Create billboard";
-    const description = initialData ? "Edit the billboard" : "Add a new billboard";
-    const toastMessage = initialData ? "Billboard updated successfully" : "Billboard created successfully";
+    const title = initialData ? "Edit category" : "Create category";
+    const description = initialData ? "Edit the category" : "Add a new category";
+    const toastMessage = initialData ? "category updated successfully" : "category created successfully";
     const action = initialData ? "Save Changes" : "Create";
 
-    const onSubmit = async (data: BillboardsFormValues) => {
+    const onSubmit = async (data: CategoriesFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data);
+                await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data);
             }
             else {
-                await axios.post(`/api/${params.storeId}/billboards`, data);
+                await axios.post(`/api/${params.storeId}/categories`, data);
             }
             router.refresh();
-            router.push(`/${params.storeId}/billboards`);
+            router.push(`/${params.storeId}/categorys`);
             toast.success(toastMessage);
 
         } catch (error) {
@@ -78,12 +76,12 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
+            await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`);
             router.refresh();
-            router.push(`/${params.storeId}/billboards/`);
-            toast.success("Billboard deleted.");
+            router.push(`/${params.storeId}/categories/`);
+            toast.success("category deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all categories using this billboard.");
+            toast.error("Make sure to remove all stores using this category.");
             console.log(error);
         }
         finally {
@@ -123,39 +121,18 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
             <Separator />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-                    <FormField
-                        control={form.control}
-                        name="imageUrl"
-                        render={
-                            ({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Background Image
-                                    </FormLabel>
-                                    <FormControl>
-                                        <ImageUpload
-                                            value={field.value ? [field.value] : []}
-                                            disabled={loading}
-                                            onChange={(url) => field.onChange(url)}
-                                            onRemove={() => field.onChange("")}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                    />
                     <div className="grid grid-cols-3 gap-8">
                         <FormField
                             control={form.control}
-                            name="label"
+                            name="name"
                             render={
                                 ({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Label
+                                            Name
                                         </FormLabel>
                                         <FormControl>
-                                            <Input disabled={loading} placeholder="Billboard label" {...field} />
+                                            <Input disabled={loading} placeholder="Category name" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -170,4 +147,4 @@ const BillboardsForm: React.FC<BillboardsFormProps> = ({ initialData }) => {
     );
 };
 
-export default BillboardsForm;
+export default CategoriesForm;

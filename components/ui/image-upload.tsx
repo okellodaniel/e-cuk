@@ -3,9 +3,9 @@
 import { ImagePlus, Mountain, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
-import { CldUploadButton, CldUploadWidget } from "next-cloudinary";
 
 import { Button } from "@/components/ui/button";
+import { CldUploadWidget } from "next-cloudinary";
 
 interface ImageUploadProps {
     disabled?: boolean;
