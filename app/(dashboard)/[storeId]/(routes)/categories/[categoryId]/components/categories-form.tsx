@@ -25,11 +25,9 @@ const formSchema = z.object({
 
 type CategoriesFormValues = z.infer<typeof formSchema>;
 
-
 interface CategoriesFormProps {
     initialData: Category | null
 }
-
 
 const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
 
@@ -83,7 +81,7 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
             router.push(`/${params.storeId}/categories/`);
             toast.success("category deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all categories using this category.");
+            toast.error("Make sure to remove all stores using this category.");
             console.log(error);
         }
         finally {
