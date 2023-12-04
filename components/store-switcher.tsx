@@ -74,7 +74,8 @@ const StoreSwitcher = ({ className, items = [] }: StoreSwitcherProps) => {
                                         />
                                     </CommandItem>
 
-                                ))}
+                                ))
+                            }
                         </CommandGroup>
                     </CommandList>
                     <CommandSeparator />

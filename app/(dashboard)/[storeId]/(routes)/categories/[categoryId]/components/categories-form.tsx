@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { Category } from "@prisma/client";
+import { Billboard, Category } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SelectContent } from "@radix-ui/react-select";
 
 
 const formSchema = z.object({
@@ -26,10 +28,11 @@ const formSchema = z.object({
 type CategoriesFormValues = z.infer<typeof formSchema>;
 
 interface CategoriesFormProps {
-    initialData: Category | null
+    initialData: Category | null;
+    billboards: Billboard[];
 }
 
-const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
+const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards }) => {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -81,7 +84,7 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
             router.push(`/${params.storeId}/categories/`);
             toast.success("category deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all stores using this category.");
+            toast.error("Make sure to remove all products using this category first.");
             console.log(error);
         }
         finally {
@@ -134,6 +137,47 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData }) => {
                                         <FormControl>
                                             <Input disabled={loading} placeholder="Category name" {...field} />
                                         </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="billboardId"
+                            render={
+                                ({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Billboard
+                                        </FormLabel>
+                                        <Select
+                                            disabled={loading}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            value={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        defaultValue={field.value}
+                                                        placeholder="Select a billboard"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {
+                                                    billboards.map((billboard) => (
+                                                        <SelectItem
+                                                            value={billboard.id}
+                                                            key={billboard.id}
+                                                        >
+                                                            {billboard.label}
+                                                        </SelectItem>
+                                                    ))
+                                                }
+                                            </SelectContent>
+
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
