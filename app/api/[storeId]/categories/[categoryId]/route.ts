@@ -99,7 +99,7 @@ export async function DELETE(req: Request, { params }: { params: { storeId: stri
 
         if (!storeByUserId) return new NextResponse("Unauthorized", { status: 403 });
 
-        const deletedCategory = await prismadb.category.delete(
+        const deletedCategory = await prismadb.category.deleteMany(
             {
                 where: {
                     id: params.categoryId,

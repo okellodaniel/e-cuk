@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { ColorColumn } from './columns';
 import { AlertModal } from '@/components/modals/alert-modal';
 
@@ -33,16 +38,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         try {
             setLoading(true);
             await axios.delete(`/api/${params.storeId}/colors/${data.id}`);
+            toast.success("Color deleted.");
             router.refresh();
-            router.push(`/${params.storeId}/colors/`);
-            toast.success("size deleted.");
+
         } catch (error) {
             toast.error("Make sure to remove all Products using this color.");
             console.log(error);
         }
         finally {
-            setLoading(false);
             setOpen(false);
+            setLoading(false);
         }
     }
 

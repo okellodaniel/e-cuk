@@ -14,10 +14,10 @@ export async function POST(req: Request, { params }: { params: { storeId: string
             return new NextResponse("Unauthenticated", { status: 401 });
         }
         if (!name) {
-            return new NextResponse("The size name is required", { status: 400 });
+            return new NextResponse("The color name is required", { status: 400 });
         }
         if (!value) {
-            return new NextResponse("The size value is required", { status: 400 });
+            return new NextResponse("The color value is required", { status: 400 });
         }
 
         if (!params.storeId) return new NextResponse("Store is required", { status: 400 });
@@ -52,13 +52,13 @@ export async function GET(req: Request, { params }: { params: { storeId: string 
 
         if (!params.storeId) return new NextResponse("Store is required", { status: 400 });
 
-        const sizes = await prismadb.color.findMany({
+        const colors = await prismadb.color.findMany({
             where: {
                 storeId: params.storeId
             }
         });
 
-        return NextResponse.json(sizes);
+        return NextResponse.json(colors);
 
     } catch (error) {
         console.log('[COLORS_GET]', error)

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
+
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 
@@ -14,6 +15,7 @@ interface AlertModalProps {
 
 
 export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfirm, loading }) => {
+    
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {

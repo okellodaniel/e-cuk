@@ -20,7 +20,7 @@ import { AlertModal } from "@/components/modals/alert-modal";
 
 const formSchema = z.object({
     name: z.string().min(1),
-    value: z.string().min(1)
+    value: z.string().min(4).regex(/^#/, { message: 'String must be a valid Hexcode' })
 });
 
 type ColorsFormValues = z.infer<typeof formSchema>;
@@ -61,9 +61,13 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
             else {
                 await axios.post(`/api/${params.storeId}/colors`, data);
             }
+
             router.refresh();
-            router.push(`/${params.storeId}/colors`);
+
             toast.success(toastMessage);
+
+            router.push(`/${params.storeId}/colors`);
+
 
         } catch (error) {
             toast.error("Something went wrong");
@@ -80,9 +84,10 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
             setLoading(true);
             await axios.delete(`/api/${params.storeId}/colors/${params.colorId}`);
             router.refresh();
-            router.push(`/${params.storeId}/colors/`);
+            router.push(`/${params.storeId}/colors`);
             toast.success("Color deleted.");
-        } catch (error) {
+
+        } catch (error: any) {
             toast.error("Make sure to remove all Products using this color.");
             console.log(error);
         }
@@ -150,7 +155,10 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
                                             Value
                                         </FormLabel>
                                         <FormControl>
-                                            <Input disabled={loading} placeholder="Product color value" {...field} />
+                                            <div className="flex items-center gap-x-4">
+                                                <Input disabled={loading} placeholder="Product color value" {...field} />
+                                                <div className="border p-4 rounded-full" style={{ backgroundColor: field.value }} />
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

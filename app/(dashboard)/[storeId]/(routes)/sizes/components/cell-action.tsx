@@ -41,8 +41,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             console.log(error);
         }
         finally {
-            setLoading(false);
             setOpen(false);
+            setLoading(false);
         }
     }
 
