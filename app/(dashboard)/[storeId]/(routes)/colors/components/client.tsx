@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { ColorColumn, columns } from "./columns"
-import { DataTable } from "@/components/data-table"
+import { DataTable } from "@/components/ui/data-table"
 import { ApiList } from "@/components/ui/api-list"
 
 interface ColorClientProps {

@@ -3,7 +3,11 @@ import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-const DashboardLayout = async ({ children, params }: { children: React.ReactNode; params: { storeId: string } }) => {
+const DashboardLayout = async (
+    { children, params }: {
+        children: React.ReactNode
+        params: { storeId: string }
+    }) => {
 
     const { userId } = auth();
 
