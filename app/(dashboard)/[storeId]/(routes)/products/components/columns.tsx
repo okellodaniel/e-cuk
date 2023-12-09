@@ -6,32 +6,38 @@ import { ArrowDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
 
-export type BillboardColumn = {
+export type ProductColumn = {
     id: string;
-    label: string;
+    name: string;
+    price: string;
     createdAt: string;
 }
 
-export const columns: ColumnDef<BillboardColumn>[] = [
+export const columns: ColumnDef<ProductColumn>[] = [
 
     {
-        accessorKey: "label",
+        accessorKey: "name",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Label
+                    Name
                     <ArrowDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
+        accessorKey: "price",
+        header: "Price",
+    },
+    {
         accessorKey: "createdAt",
         header: "Date",
     },
+
     {
         id: "actions",
         cell: ({ row }) => <CellAction data={row.original} />

@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prismadb";
-import BillboardsForm from "./components/billboards-form";
+import ProductForm from "./components/product-form";
 
 const BillboardPage = async ({
     params }: { params: { billboardId: string } }
@@ -16,7 +16,7 @@ const BillboardPage = async ({
             <div>
                 <div className="flex-col">
                     <div className="flex-1 space-y-4 p-8 pt-6">
-                        <BillboardsForm initialData={billboard}/>
+                        <ProductForm initialData={billboard}/>
                     </div>
                 </div>
             </div>
