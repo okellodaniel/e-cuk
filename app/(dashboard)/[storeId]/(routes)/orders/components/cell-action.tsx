@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { BillboardColumn } from './columns';
+import { OrderColumn } from './columns';
 import { AlertModal } from '@/components/modals/alert-modal';
 
 import { Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
@@ -13,7 +13,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 interface CellActionProps {
-    data: BillboardColumn
+    data: OrderColumn
 };
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -26,18 +26,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-        toast.success("BillboardId copied to clipboard");
+        toast.success("OrderId copied to clipboard");
     };
 
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
+            await axios.delete(`/api/${params.storeId}/orders/${data.id}`);
             router.refresh();
-            router.push(`/${params.storeId}/billboards/`);
-            toast.success("Billboard deleted.");
+            router.push(`/${params.storeId}/orders/`);
+            toast.success("Order deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all categories using this billboard.");
+            toast.error("Make sure to remove all categories using this order.");
             console.log(error);
         }
         finally {

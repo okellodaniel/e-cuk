@@ -10,28 +10,46 @@ export type OrderColumn = {
     isPaid: boolean;
     phone: string;
     address: string;
+    totalPrice: string;
+    products: string;
     createdAt: string;
 }
 
 export const columns: ColumnDef<OrderColumn>[] = [
 
     {
-        accessorKey: "label",
+        accessorKey: "products",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Label
+                    Product
                     <ArrowDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
+        accessorKey: "phone",
+        header: "Phone",
+    },
+    {
+        accessorKey: "address",
+        header: "Address",
+    },
+    {
         accessorKey: "createdAt",
         header: "Date",
+    },
+    {
+        accessorKey: "totalPrice",
+        header: "Total Price",
+    },
+    {
+        accessorKey: "isPaid",
+        header: "Paid",
     },
     {
         id: "actions",
