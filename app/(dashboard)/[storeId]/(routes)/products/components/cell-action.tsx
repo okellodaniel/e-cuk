@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { SizeColumn } from './columns';
+import { ProductColumn } from './columns';
 import { AlertModal } from '@/components/modals/alert-modal';
 
 import { Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
@@ -13,7 +13,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 interface CellActionProps {
-    data: SizeColumn
+    data: ProductColumn
 };
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -26,23 +26,23 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-        toast.success("SizeId copied to clipboard");
+        toast.success("ProductId copied to clipboard");
     };
 
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
+            await axios.delete(`/api/${params.storeId}/products/${data.id}`);
             router.refresh();
-            router.push(`/${params.storeId}/sizes/`);
-            toast.success("size deleted.");
+            router.push(`/${params.storeId}/products/`);
+            toast.success("Product deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all Products using this size.");
+            toast.error("Make sure to rem.");
             console.log(error);
         }
         finally {
-            setOpen(false);
             setLoading(false);
+            setOpen(false);
         }
     }
 
@@ -70,7 +70,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                         <Copy className='mr-2 h-4 w-4' />
                         Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/sizes/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/products/${data.id}`)}>
                         <Edit className='mr-2 h-4 w-4' />
                         Update
                     </DropdownMenuItem>

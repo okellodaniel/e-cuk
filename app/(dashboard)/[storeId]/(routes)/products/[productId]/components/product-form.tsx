@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { Billboard, Category } from "@prisma/client";
+import { Product, Image, Color, Category, Size } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,23 +16,34 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SelectContent } from "@radix-ui/react-select";
-
+import ImageUpload from "@/components/ui/image-upload";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
     name: z.string().min(1),
-    billboardId: z.string().min(1)
+    price: z.coerce.number().min(1),
+    categoryId: z.string().min(1),
+    colorId: z.string().min(1),
+    sizeId: z.string().min(1),
+    images: z.object({ url: z.string() }).array(),
+    isFeatured: z.boolean().default(false).optional(),
+    isArchived: z.boolean().default(false).optional()
 });
 
-type CategoriesFormValues = z.infer<typeof formSchema>;
+type ProductFormValues = z.infer<typeof formSchema>;
 
-interface CategoriesFormProps {
-    initialData: Category | null;
-    billboards: Billboard[];
+
+interface ProductFormProps {
+    initialData: Product & {
+        images: Image[]
+    } | null,
+    colors: Color[];
+    categories: Category[];
+    sizes: Size[];
 }
 
-const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards }) => {
+
+const ProductsForm: React.FC<ProductFormProps> = ({ initialData, colors, categories, sizes }) => {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -40,30 +51,37 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
     const params = useParams();
     const router = useRouter();
 
-    const form = useForm<CategoriesFormValues>({
+    const form = useForm<ProductFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData || {
+        defaultValues: initialData ? {
+            ...initialData,
+            price: parseFloat(String(initialData?.price))
+        } : {
+            images: [],
             name: '',
-            billboardId: ''
+            price: 0,
+            colorId: '',
+            sizeId: '',
+            isFeatured: false,
+            isArchived: false
         }
     });
 
-    const title = initialData ? "Edit category" : "Create category";
-    const description = initialData ? "Edit the category" : "Add a new category";
-    const toastMessage = initialData ? "category updated successfully" : "category created successfully";
+    const title = initialData ? "Edit product" : "Create product";
+    const description = initialData ? "Edit the product" : "Add a new product";
+    const toastMessage = initialData ? "Product updated successfully" : "Product created successfully";
     const action = initialData ? "Save Changes" : "Create";
 
-    const onSubmit = async (data: CategoriesFormValues) => {
+    const onSubmit = async (data: ProductFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data);
+                await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data);
             }
             else {
-                await axios.post(`/api/${params.storeId}/categories`, data);
+                await axios.post(`/api/${params.storeId}/products`, data);
             }
             router.refresh();
-            router.push(`/${params.storeId}/categories`);
             toast.success(toastMessage);
 
         } catch (error) {
@@ -79,11 +97,12 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`);
+            await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
             router.refresh();
-            toast.success("category deleted.");
+            router.push(`/${params.storeId}/products/`);
+            toast.success("Product deleted.");
         } catch (error) {
-            toast.error("Make sure to remove all products using this category first.");
+            toast.error("Make sure to remove all products.");
             console.log(error);
         }
         finally {
@@ -123,6 +142,27 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
             <Separator />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+                    <FormField
+                        control={form.control}
+                        name="images"
+                        render={
+                            ({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Images
+                                    </FormLabel>
+                                    <FormControl>
+                                        <ImageUpload
+                                            value={field.value.map((image) => image.url)}
+                                            disabled={loading}
+                                            onChange={(url) => field.onChange([...field.value, { url }])}
+                                            onRemove={(url) => field.onChange([...field.value.filter((current) => current.url !== url)])}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                    />
                     <div className="grid grid-cols-3 gap-8">
                         <FormField
                             control={form.control}
@@ -134,7 +174,7 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
                                             Name
                                         </FormLabel>
                                         <FormControl>
-                                            <Input disabled={loading} placeholder="Category name" {...field} />
+                                            <Input disabled={loading} placeholder="Product name" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -142,12 +182,29 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
                         />
                         <FormField
                             control={form.control}
-                            name="billboardId"
+                            name="price"
                             render={
                                 ({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Billboard
+                                            Price
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input type="number" disabled={loading} placeholder="$9.99" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="categoryId"
+                            render={
+                                ({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Category
                                         </FormLabel>
                                         <Select
                                             disabled={loading}
@@ -159,18 +216,18 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
                                                 <SelectTrigger>
                                                     <SelectValue
                                                         defaultValue={field.value}
-                                                        placeholder="Select a billboard"
+                                                        placeholder="Select a category"
                                                     />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
                                                 {
-                                                    billboards.map((billboard) => (
+                                                    categories.map((category) => (
                                                         <SelectItem
-                                                            value={billboard.id}
-                                                            key={billboard.id}
+                                                            value={category.id}
+                                                            key={category.id}
                                                         >
-                                                            {billboard.label}
+                                                            {category.name}
                                                         </SelectItem>
                                                     ))
                                                 }
@@ -190,4 +247,4 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({ initialData, billboards
     );
 };
 
-export default CategoriesForm;
+export default ProductsForm;

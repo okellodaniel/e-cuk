@@ -26,7 +26,7 @@ export const StoreModal = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: ''
+            name: ""
         }
     });
 
@@ -39,7 +39,6 @@ export const StoreModal = () => {
             window.location.assign(`/${response.data.id}`);
 
         } catch (error) {
-            console.log(error);
             toast.error("Something went wrong");
         }
         finally {

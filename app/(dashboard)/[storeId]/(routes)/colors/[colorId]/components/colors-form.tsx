@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { Size } from "@prisma/client";
+import { Color } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,18 +20,18 @@ import { AlertModal } from "@/components/modals/alert-modal";
 
 const formSchema = z.object({
     name: z.string().min(1),
-    value: z.string().min(1)
+    value: z.string().min(4).regex(/^#/, { message: 'String must be a valid Hexcode' })
 });
 
-type SizesFormValues = z.infer<typeof formSchema>;
+type ColorsFormValues = z.infer<typeof formSchema>;
 
 
-interface SizesFormProps {
-    initialData: Size | null
+interface ColorsFormProps {
+    initialData: Color | null
 }
 
 
-const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
+const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
     const params = useParams();
     const router = useRouter();
 
-    const form = useForm<SizesFormValues>({
+    const form = useForm<ColorsFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
             name: '',
@@ -47,22 +47,27 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
         }
     });
 
-    const title = initialData ? "Edit size" : "Create a size";
-    const description = initialData ? "Edit the size" : "Add a new size";
-    const toastMessage = initialData ? "Size updated successfully" : "Size created successfully";
+    const title = initialData ? "Edit color" : "Create a color";
+    const description = initialData ? "Edit the color" : "Add a new color";
+    const toastMessage = initialData ? "Color updated successfully" : "Color created successfully";
     const action = initialData ? "Save Changes" : "Create";
 
-    const onSubmit = async (data: SizesFormValues) => {
+    const onSubmit = async (data: ColorsFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`/api/${params.storeId}/sizes/${params.sizeId}`, data);
+                await axios.patch(`/api/${params.storeId}/colors/${params.colorId}`, data);
             }
             else {
-                await axios.post(`/api/${params.storeId}/sizes`, data);
+                await axios.post(`/api/${params.storeId}/colors`, data);
             }
+
             router.refresh();
+
             toast.success(toastMessage);
+
+            router.push(`/${params.storeId}/colors`);
+
 
         } catch (error) {
             toast.error("Something went wrong");
@@ -74,19 +79,15 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
     };
 
 
-    const onDelete = async () => {
+    const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/sizes/${params.sizeId}`);
-
+            await axios.delete(`/api/${params.storeId}/colors/${params.colorId}`);
+            toast.success("Color deleted.");
             router.refresh();
 
-            router.push(`/${params.storeId}/sizes/`);
-
-            toast.success("Size deleted.");
-        } catch (error) {
-            toast.error("Make sure to remove all Products using this size.");
-            console.log(error);
+        } catch (error: any) {
+            toast.error("Make sure to remove all Products using this color.");
         }
         finally {
             setLoading(false);
@@ -99,7 +100,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
             <AlertModal
                 isOpen={open}
                 onClose={() => setOpen(false)}
-                onConfirm={onDelete}
+                onConfirm={onConfirm}
                 loading={loading}
             />
 
@@ -114,7 +115,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
                     <Button
                         disabled={loading}
                         variant="destructive"
-                        size="sm"
+                        color="sm"
                         onClick={() => setOpen(true)}
                     >
                         <Trash className="h-4 w-4" />
@@ -136,7 +137,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
                                             Name
                                         </FormLabel>
                                         <FormControl>
-                                            <Input disabled={loading} placeholder="Product size name" {...field} />
+                                            <Input disabled={loading} placeholder="Product color name" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -152,7 +153,10 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
                                             Value
                                         </FormLabel>
                                         <FormControl>
-                                            <Input disabled={loading} placeholder="Product size value" {...field} />
+                                            <div className="flex items-center gap-x-4">
+                                                <Input disabled={loading} placeholder="Product color value" {...field} />
+                                                <div className="border p-4 rounded-full" style={{ backgroundColor: field.value }} />
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -167,4 +171,4 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
     );
 };
 
-export default SizesForm;
+export default ColorsForm;

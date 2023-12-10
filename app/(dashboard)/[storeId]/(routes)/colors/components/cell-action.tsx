@@ -1,8 +1,13 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { SizeColumn } from './columns';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { ColorColumn } from './columns';
 import { AlertModal } from '@/components/modals/alert-modal';
 
 import { Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
@@ -13,7 +18,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 interface CellActionProps {
-    data: SizeColumn
+    data: ColorColumn
 };
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -22,37 +27,36 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     const params = useParams();
 
     const [loading, setLoading] = useState(false);
-    const [isOpen, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-        toast.success("SizeId copied to clipboard");
+        toast.success("ColorId copied to clipboard");
     };
 
-    const onDelete = async () => {
+    const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
+            await axios.delete(`/api/${params.storeId}/colors/${data.id}`);
+            toast.success("Color deleted.");
             router.refresh();
-            router.push(`/${params.storeId}/sizes/`);
-            toast.success("size deleted.");
+
         } catch (error) {
-            toast.error("Make sure to remove all Products using this size.");
-            console.log(error);
+            toast.error("Make sure to remove all Products using this color.");
         }
         finally {
             setOpen(false);
             setLoading(false);
         }
-    }
+    };
 
 
     return (
-        <>
+        <div>
             <AlertModal
-                isOpen={isOpen}
+                isOpen={open}
                 onClose={() => setOpen(false)}
-                onConfirm={onDelete}
+                onConfirm={onConfirm}
                 loading={loading}
             />
             <DropdownMenu>
@@ -70,7 +74,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                         <Copy className='mr-2 h-4 w-4' />
                         Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/sizes/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/colors/${data.id}`)}>
                         <Edit className='mr-2 h-4 w-4' />
                         Update
                     </DropdownMenuItem>
@@ -80,6 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-        </>
+        </div>
+
     )
 };
