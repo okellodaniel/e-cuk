@@ -83,9 +83,9 @@ model Product {
   name       String
   size       Size     @relation(fields: [sizeId], references: [id])
   color      Color    @relation(fields: [colorId], references: [id])
-  Images     Image[]
+  images     Image[]
   price      Decimal
-  Store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
+  store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
   storeId    String
   category   Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
   categoryId String
