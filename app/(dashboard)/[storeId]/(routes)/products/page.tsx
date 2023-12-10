@@ -28,8 +28,8 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
             isFeatured: item.isFeatured,
             isArchived: item.isArchived,
             category: item.category.name,
-            size: item.category.name,
-            color: item.color.value,
+            size: item.size.name,
+            color: item.color.name,
             createdAt: format(item.createdAt, "dd MMMM, yyyy")
         }
     ));

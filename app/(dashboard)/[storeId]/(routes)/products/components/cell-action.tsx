@@ -21,8 +21,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     const router = useRouter();
     const params = useParams();
 
-    const [loading, setLoading] = useState(false);
     const [isOpen, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
@@ -34,18 +34,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             setLoading(true);
             await axios.delete(`/api/${params.storeId}/products/${data.id}`);
             router.refresh();
-            router.push(`/${params.storeId}/products/`);
             toast.success("Product deleted.");
         } catch (error) {
             toast.error("Make sure to rem.");
             console.log(error);
-        }
-        finally {
+        } finally {
             setLoading(false);
             setOpen(false);
         }
-    }
-
+    };
 
     return (
         <>
