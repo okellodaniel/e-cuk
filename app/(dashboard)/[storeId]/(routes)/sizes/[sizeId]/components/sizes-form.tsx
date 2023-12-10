@@ -55,7 +55,9 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
     const onSubmit = async (data: SizesFormValues) => {
         try {
             setLoading(true);
+
             if (initialData) {
+
                 await axios.patch(`/api/${params.storeId}/sizes/${params.sizeId}`, data);
             }
             else {
@@ -63,6 +65,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
             }
             router.refresh();
             toast.success(toastMessage);
+            router.push(`/${params.storeId}/sizes`);
 
         } catch (error) {
             toast.error("Something went wrong");
@@ -76,14 +79,16 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
 
     const onDelete = async () => {
         try {
+
             setLoading(true);
+
             await axios.delete(`/api/${params.storeId}/sizes/${params.sizeId}`);
 
             router.refresh();
-
-            router.push(`/${params.storeId}/sizes/`);
-
             toast.success("Size deleted.");
+
+            router.push(`/${params.storeId}/sizes`);
+
         } catch (error) {
             toast.error("Make sure to remove all Products using this size.");
             console.log(error);
