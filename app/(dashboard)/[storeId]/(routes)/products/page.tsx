@@ -2,12 +2,18 @@ import prismadb from "@/lib/prismadb";
 import { ProductClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
 import { format } from "date-fns";
+import { formatter } from "@/lib/utils";
 
-const   ProductsPage = async ({ params }: { params: { storeId: string } }) => {
+const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
 
     const products = await prismadb.product.findMany({
         where: {
             storeId: params.storeId
+        },
+        include: {
+            category: true,
+            color: true,
+            size: true
         },
         orderBy: {
             createdAt: "desc"
@@ -18,7 +24,12 @@ const   ProductsPage = async ({ params }: { params: { storeId: string } }) => {
         {
             id: item.id,
             name: item.name,
-            price: item.price.toString(),
+            price: formatter.format(item.price.toNumber()),
+            isFeatured: item.isFeatured,
+            isArchived: item.isArchived,
+            category: item.category.name,
+            size: item.category.name,
+            color: item.color.value,
             createdAt: format(item.createdAt, "dd MMMM, yyyy")
         }
     ));
