@@ -293,13 +293,13 @@ const ProductsForm: React.FC<ProductFormProps> = ({ initialData, colors, categor
                                         <Select
                                             disabled={loading}
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            defaultValue={field.name}
                                             value={field.value}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue
-                                                        defaultValue={field.value}
+                                                        defaultValue={field.name}
                                                         placeholder="Select a color"
                                                     />
                                                 </SelectTrigger>
@@ -311,7 +311,7 @@ const ProductsForm: React.FC<ProductFormProps> = ({ initialData, colors, categor
                                                             value={color.id}
                                                             key={color.id}
                                                         >
-                                                            {color.value}
+                                                            {color.name}
                                                         </SelectItem>
                                                     ))
                                                 }
