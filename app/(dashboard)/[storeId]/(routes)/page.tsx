@@ -7,7 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { getTotalRevenue } from "@/actions/get-total-revenue";
 import { getTotalSales } from "@/actions/get-total-sales";
 import { getTotalProducts } from "@/actions/get-total-products";
-import Overview from "@/components/overview";
+import { Overview } from "@/components/overview";
+import { getGraphRevenue } from "@/actions/graph-revenue";
 
 interface DashBoardPageProps {
     params: { storeId: string }
@@ -18,6 +19,7 @@ const DashboardPage: React.FC<DashBoardPageProps> = async ({ params }) => {
     const totalRevenue = await getTotalRevenue(params.storeId);
     const totalSales = await getTotalSales(params.storeId);
     const totalProducts = await getTotalProducts(params.storeId);
+    const graphRevenue = await getGraphRevenue(params.storeId);
 
     return (
 
@@ -72,7 +74,7 @@ const DashboardPage: React.FC<DashBoardPageProps> = async ({ params }) => {
                         <CardTitle>Overview</CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <Overview data={[]} />
+                        <Overview data={graphRevenue} />
                     </CardContent>
                 </Card>
             </div>
