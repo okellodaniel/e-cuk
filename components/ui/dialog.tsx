@@ -12,6 +12,7 @@ const DialogTrigger = DialogPrimitive.Trigger
 
 const DialogPortal = ({
   className,
+  children,
   ...props
 }: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal className={cn(className)} {...props} />
